@@ -93,12 +93,10 @@ public class Main {
         Name n1 = new Name("Juan", "", "Dela Cruz");
         Name n2 = new Name(null, null, null);
 
-        System.out.println("[Name.display()]");
         n1.display();
         n2.display();
 
         MyDate d1 = new MyDate(25, 12, 2001);
-        System.out.println("[MyDate.display()]");
         d1.display();
 
         System.out.println("[validation checks]");
