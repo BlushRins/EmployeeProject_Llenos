@@ -3,24 +3,28 @@ package version2;
 public class CommissionEmployee {
 
     private int empID;
-    private String empName;
+    private Name empName;
+    private MyDate birthDate;
     private double totalSale;
 
     public CommissionEmployee() {
         this.empID = 0;
-        this.empName = "N/A";
+        this.empName = new Name();
+        this.birthDate = new MyDate();
         this.totalSale = 0;
     }
 
-    public CommissionEmployee(int empID, String empName) {
+    public CommissionEmployee(int empID, Name empName, MyDate birthDate) {
         this.empID = empID;
-        this.empName = empName;
+        setEmpName(empName);
+        setBirthDate(birthDate);
         this.totalSale = 0;
     }
 
-    public CommissionEmployee(int empID, String empName, double totalSale) {
+    public CommissionEmployee(int empID, Name empName, MyDate birthDate, double totalSale) {
         this.empID = empID;
-        this.empName = empName;
+        setEmpName(empName);
+        setBirthDate(birthDate);
         setTotalSale(totalSale);
     }
 
@@ -32,15 +36,27 @@ public class CommissionEmployee {
         this.empID = empID;
     }
 
-    public String getEmpName() {
+    public Name getEmpName() {
         return empName;
     }
 
-    public void setEmpName(String empName) {
-        if (empName == null || empName.trim().isEmpty()) {
-            this.empName = "N/A";
+    public void setEmpName(Name empName) {
+        if (empName == null) {
+            this.empName = new Name();
         } else {
             this.empName = empName;
+        }
+    }
+
+    public MyDate getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(MyDate birthDate) {
+        if (birthDate == null) {
+            this.birthDate = new MyDate();
+        } else {
+            this.birthDate = birthDate;
         }
     }
 
@@ -74,14 +90,15 @@ public class CommissionEmployee {
     }
 
     public void displayCommissionEmployee() {
-        System.out.printf("ID: %d | Name: %s | Total Sales: PHP%,.2f%n",
-                empID, empName, totalSale);
+        System.out.printf("ID: %d | Name: %s | Birthdate: %s | Total Sales: PHP%,.2f%n",
+                empID, empName, birthDate, totalSale);
     }
 
     @Override
     public String toString() {
         return String.format(
-                "CommissionEmployee [ID: %d, Name: %s, Sales: PHP%,.2f, Rate: %.0f%%, Total Salary: PHP%,.2f]",
-                empID, empName, totalSale, getCommissionRate() * 100, computeSalary());
+                "CommissionEmployee [ID: %d, Name: %s, Birthdate: %s, Sales: PHP%,.2f, "
+                        + "Rate: %.0f%%, Total Salary: PHP%,.2f]",
+                empID, empName, birthDate, totalSale, getCommissionRate() * 100, computeSalary());
     }
 }

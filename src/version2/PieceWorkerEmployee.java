@@ -3,27 +3,32 @@ package version2;
 public class PieceWorkerEmployee {
 
     private int empID;
-    private String empName;
+    private Name empName;
+    private MyDate birthDate;
     private int totalPiecesFinished;
     private double ratePerPiece;
 
     public PieceWorkerEmployee() {
         this.empID = 0;
-        this.empName = "N/A";
+        this.empName = new Name();
+        this.birthDate = new MyDate();
         this.totalPiecesFinished = 0;
         this.ratePerPiece = 0;
     }
 
-    public PieceWorkerEmployee(int empID, String empName) {
+    public PieceWorkerEmployee(int empID, Name empName, MyDate birthDate) {
         this.empID = empID;
-        this.empName = empName;
+        setEmpName(empName);
+        setBirthDate(birthDate);
         this.totalPiecesFinished = 0;
         this.ratePerPiece = 0;
     }
 
-    public PieceWorkerEmployee(int empID, String empName, int totalPiecesFinished, double ratePerPiece) {
+    public PieceWorkerEmployee(int empID, Name empName, MyDate birthDate,
+                               int totalPiecesFinished, double ratePerPiece) {
         this.empID = empID;
-        this.empName = empName;
+        setEmpName(empName);
+        setBirthDate(birthDate);
         setTotalPiecesFinished(totalPiecesFinished);
         setRatePerPiece(ratePerPiece);
     }
@@ -36,15 +41,27 @@ public class PieceWorkerEmployee {
         this.empID = empID;
     }
 
-    public String getEmpName() {
+    public Name getEmpName() {
         return empName;
     }
 
-    public void setEmpName(String empName) {
-        if (empName == null || empName.trim().isEmpty()) {
-            this.empName = "N/A";
+    public void setEmpName(Name empName) {
+        if (empName == null) {
+            this.empName = new Name();
         } else {
             this.empName = empName;
+        }
+    }
+
+    public MyDate getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(MyDate birthDate) {
+        if (birthDate == null) {
+            this.birthDate = new MyDate();
+        } else {
+            this.birthDate = birthDate;
         }
     }
 
@@ -82,14 +99,15 @@ public class PieceWorkerEmployee {
     }
 
     public void displayPieceWorkerEmployee() {
-        System.out.printf("ID: %d | Name: %s | Pieces Finished: %d | Rate/Piece: PHP%,.2f%n",
-                empID, empName, totalPiecesFinished, ratePerPiece);
+        System.out.printf("ID: %d | Name: %s | Birthdate: %s | Pieces Finished: %d | Rate/Piece: PHP%,.2f%n",
+                empID, empName, birthDate, totalPiecesFinished, ratePerPiece);
     }
 
     @Override
     public String toString() {
         return String.format(
-                "PieceWorkerEmployee [ID: %d, Name: %s, Pieces: %d, Rate: PHP%,.2f, Total Salary: PHP%,.2f]",
-                empID, empName, totalPiecesFinished, ratePerPiece, computeSalary());
+                "PieceWorkerEmployee [ID: %d, Name: %s, Birthdate: %s, Pieces: %d, Rate: PHP%,.2f, "
+                        + "Total Salary: PHP%,.2f]",
+                empID, empName, birthDate, totalPiecesFinished, ratePerPiece, computeSalary());
     }
 }

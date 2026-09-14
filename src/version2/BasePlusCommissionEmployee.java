@@ -3,27 +3,32 @@ package version2;
 public class BasePlusCommissionEmployee {
 
     private int empID;
-    private String empName;
+    private Name empName;
+    private MyDate birthDate;
     private double totalSale;
     private double baseSalary;
 
     public BasePlusCommissionEmployee() {
         this.empID = 0;
-        this.empName = "N/A";
+        this.empName = new Name();
+        this.birthDate = new MyDate();
         this.totalSale = 0;
         this.baseSalary = 0;
     }
 
-    public BasePlusCommissionEmployee(int empID, String empName) {
+    public BasePlusCommissionEmployee(int empID, Name empName, MyDate birthDate) {
         this.empID = empID;
-        this.empName = empName;
+        setEmpName(empName);
+        setBirthDate(birthDate);
         this.totalSale = 0;
         this.baseSalary = 0;
     }
 
-    public BasePlusCommissionEmployee(int empID, String empName, double totalSale, double baseSalary) {
+    public BasePlusCommissionEmployee(int empID, Name empName, MyDate birthDate,
+                                      double totalSale, double baseSalary) {
         this.empID = empID;
-        this.empName = empName;
+        setEmpName(empName);
+        setBirthDate(birthDate);
         setTotalSale(totalSale);
         setBaseSalary(baseSalary);
     }
@@ -36,15 +41,27 @@ public class BasePlusCommissionEmployee {
         this.empID = empID;
     }
 
-    public String getEmpName() {
+    public Name getEmpName() {
         return empName;
     }
 
-    public void setEmpName(String empName) {
-        if (empName == null || empName.trim().isEmpty()) {
-            this.empName = "N/A";
+    public void setEmpName(Name empName) {
+        if (empName == null) {
+            this.empName = new Name();
         } else {
             this.empName = empName;
+        }
+    }
+
+    public MyDate getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(MyDate birthDate) {
+        if (birthDate == null) {
+            this.birthDate = new MyDate();
+        } else {
+            this.birthDate = birthDate;
         }
     }
 
@@ -91,15 +108,15 @@ public class BasePlusCommissionEmployee {
     }
 
     public void displayBasePlusCommissionEmployee() {
-        System.out.printf("ID: %d | Name: %s | Total Sales: PHP%,.2f | Base Salary: PHP%,.2f%n",
-                empID, empName, totalSale, baseSalary);
+        System.out.printf("ID: %d | Name: %s | Birthdate: %s | Total Sales: PHP%,.2f | Base Salary: PHP%,.2f%n",
+                empID, empName, birthDate, totalSale, baseSalary);
     }
 
     @Override
     public String toString() {
         return String.format(
-                "BasePlusCommissionEmployee [ID: %d, Name: %s, Base Salary: PHP%,.2f, Sales: PHP%,.2f, "
-                        + "Rate: %.0f%%, Total Salary: PHP%,.2f]",
-                empID, empName, baseSalary, totalSale, getCommissionRate() * 100, computeSalary());
+                "BasePlusCommissionEmployee [ID: %d, Name: %s, Birthdate: %s, Base Salary: PHP%,.2f, "
+                        + "Sales: PHP%,.2f, Rate: %.0f%%, Total Salary: PHP%,.2f]",
+                empID, empName, birthDate, baseSalary, totalSale, getCommissionRate() * 100, computeSalary());
     }
 }

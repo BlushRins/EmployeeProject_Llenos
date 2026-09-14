@@ -3,27 +3,32 @@ package version2;
 public class HourlyEmployee {
 
     private int empID;
-    private String empName;
+    private Name empName;
+    private MyDate birthDate;
     private float totalHoursWorked;
     private double ratePerHour;
 
     public HourlyEmployee() {
         this.empID = 0;
-        this.empName = "N/A";
+        this.empName = new Name();
+        this.birthDate = new MyDate();
         this.totalHoursWorked = 0;
         this.ratePerHour = 0;
     }
 
-    public HourlyEmployee(int empID, String empName) {
+    public HourlyEmployee(int empID, Name empName, MyDate birthDate) {
         this.empID = empID;
-        this.empName = empName;
+        setEmpName(empName);
+        setBirthDate(birthDate);
         this.totalHoursWorked = 0;
         this.ratePerHour = 0;
     }
 
-    public HourlyEmployee(int empID, String empName, float totalHoursWorked, double ratePerHour) {
+    public HourlyEmployee(int empID, Name empName, MyDate birthDate,
+                          float totalHoursWorked, double ratePerHour) {
         this.empID = empID;
-        this.empName = empName;
+        setEmpName(empName);
+        setBirthDate(birthDate);
         setTotalHoursWorked(totalHoursWorked);
         setRatePerHour(ratePerHour);
     }
@@ -36,15 +41,27 @@ public class HourlyEmployee {
         this.empID = empID;
     }
 
-    public String getEmpName() {
+    public Name getEmpName() {
         return empName;
     }
 
-    public void setEmpName(String empName) {
-        if (empName == null || empName.trim().isEmpty()) {
-            this.empName = "N/A";
+    public void setEmpName(Name empName) {
+        if (empName == null) {
+            this.empName = new Name();
         } else {
             this.empName = empName;
+        }
+    }
+
+    public MyDate getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(MyDate birthDate) {
+        if (birthDate == null) {
+            this.birthDate = new MyDate();
+        } else {
+            this.birthDate = birthDate;
         }
     }
 
@@ -88,14 +105,15 @@ public class HourlyEmployee {
     }
 
     public void displayHourlyEmployee() {
-        System.out.printf("ID: %d | Name: %s | Hours: %.2f | Rate: PHP%,.2f/hr%n",
-                empID, empName, totalHoursWorked, ratePerHour);
+        System.out.printf("ID: %d | Name: %s | Birthdate: %s | Hours: %.2f | Rate: PHP%,.2f/hr%n",
+                empID, empName, birthDate, totalHoursWorked, ratePerHour);
     }
 
     @Override
     public String toString() {
         return String.format(
-                "HourlyEmployee [ID: %d, Name: %s, Hours: %.2f, Rate: PHP%,.2f, Total Salary: PHP%,.2f]",
-                empID, empName, totalHoursWorked, ratePerHour, computeSalary());
+                "HourlyEmployee [ID: %d, Name: %s, Birthdate: %s, Hours: %.2f, Rate: PHP%,.2f, "
+                        + "Total Salary: PHP%,.2f]",
+                empID, empName, birthDate, totalHoursWorked, ratePerHour, computeSalary());
     }
 }
