@@ -2,9 +2,12 @@ package version2;
 
 public class BasePlusCommissionEmployee {
 
+    public static final double BIRTHDAY_INCENTIVE = 5000.00;
+
     private int empID;
     private Name empName;
     private MyDate birthDate;
+    private MyDate dateHired;
     private double totalSale;
     private double baseSalary;
 
@@ -12,23 +15,26 @@ public class BasePlusCommissionEmployee {
         this.empID = 0;
         this.empName = new Name();
         this.birthDate = new MyDate();
+        this.dateHired = new MyDate();
         this.totalSale = 0;
         this.baseSalary = 0;
     }
 
-    public BasePlusCommissionEmployee(int empID, Name empName, MyDate birthDate) {
+    public BasePlusCommissionEmployee(int empID, Name empName, MyDate birthDate, MyDate dateHired) {
         this.empID = empID;
         setEmpName(empName);
         setBirthDate(birthDate);
+        setDateHired(dateHired);
         this.totalSale = 0;
         this.baseSalary = 0;
     }
 
-    public BasePlusCommissionEmployee(int empID, Name empName, MyDate birthDate,
+    public BasePlusCommissionEmployee(int empID, Name empName, MyDate birthDate, MyDate dateHired,
                                       double totalSale, double baseSalary) {
         this.empID = empID;
         setEmpName(empName);
         setBirthDate(birthDate);
+        setDateHired(dateHired);
         setTotalSale(totalSale);
         setBaseSalary(baseSalary);
     }
@@ -62,6 +68,18 @@ public class BasePlusCommissionEmployee {
             this.birthDate = new MyDate();
         } else {
             this.birthDate = birthDate;
+        }
+    }
+
+    public MyDate getDateHired() {
+        return dateHired;
+    }
+
+    public void setDateHired(MyDate dateHired) {
+        if (dateHired == null) {
+            this.dateHired = new MyDate();
+        } else {
+            this.dateHired = dateHired;
         }
     }
 
@@ -103,20 +121,30 @@ public class BasePlusCommissionEmployee {
         }
     }
 
+    // Regular earnings without the birthday incentive
     public double computeSalary() {
         return baseSalary + (totalSale * getCommissionRate());
     }
 
+    // Adds the birthday incentive when the payroll month is the employee's birth month
+    public double computeSalary(int currentMonth) {
+        if (birthDate.getMonth() == currentMonth) {
+            return computeSalary() + BIRTHDAY_INCENTIVE;
+        }
+        return computeSalary();
+    }
+
     public void displayBasePlusCommissionEmployee() {
-        System.out.printf("ID: %d | Name: %s | Birthdate: %s | Total Sales: PHP%,.2f | Base Salary: PHP%,.2f%n",
-                empID, empName, birthDate, totalSale, baseSalary);
+        System.out.printf("ID: %d | Name: %s | DOB: %s | Hired: %s | Total Sales: ₱%,.2f | Base Salary: ₱%,.2f%n",
+                empID, empName, birthDate, dateHired, totalSale, baseSalary);
     }
 
     @Override
     public String toString() {
         return String.format(
-                "BasePlusCommissionEmployee [ID: %d, Name: %s, Birthdate: %s, Base Salary: PHP%,.2f, "
-                        + "Sales: PHP%,.2f, Rate: %.0f%%, Total Salary: PHP%,.2f]",
-                empID, empName, birthDate, baseSalary, totalSale, getCommissionRate() * 100, computeSalary());
+                "BasePlusCommissionEmployee [ID: %d, Name: %s, DOB: %s, Hired: %s, Base Salary: ₱%,.2f, "
+                        + "Sales: ₱%,.2f, Rate: %.0f%%, Total Salary: ₱%,.2f]",
+                empID, empName, birthDate, dateHired, baseSalary, totalSale,
+                getCommissionRate() * 100, computeSalary());
     }
 }

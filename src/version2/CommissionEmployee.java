@@ -2,29 +2,36 @@ package version2;
 
 public class CommissionEmployee {
 
+    public static final double BIRTHDAY_INCENTIVE = 5000.00;
+
     private int empID;
     private Name empName;
     private MyDate birthDate;
+    private MyDate dateHired;
     private double totalSale;
 
     public CommissionEmployee() {
         this.empID = 0;
         this.empName = new Name();
         this.birthDate = new MyDate();
+        this.dateHired = new MyDate();
         this.totalSale = 0;
     }
 
-    public CommissionEmployee(int empID, Name empName, MyDate birthDate) {
+    public CommissionEmployee(int empID, Name empName, MyDate birthDate, MyDate dateHired) {
         this.empID = empID;
         setEmpName(empName);
         setBirthDate(birthDate);
+        setDateHired(dateHired);
         this.totalSale = 0;
     }
 
-    public CommissionEmployee(int empID, Name empName, MyDate birthDate, double totalSale) {
+    public CommissionEmployee(int empID, Name empName, MyDate birthDate, MyDate dateHired,
+                              double totalSale) {
         this.empID = empID;
         setEmpName(empName);
         setBirthDate(birthDate);
+        setDateHired(dateHired);
         setTotalSale(totalSale);
     }
 
@@ -60,6 +67,18 @@ public class CommissionEmployee {
         }
     }
 
+    public MyDate getDateHired() {
+        return dateHired;
+    }
+
+    public void setDateHired(MyDate dateHired) {
+        if (dateHired == null) {
+            this.dateHired = new MyDate();
+        } else {
+            this.dateHired = dateHired;
+        }
+    }
+
     public double getTotalSale() {
         return totalSale;
     }
@@ -85,20 +104,29 @@ public class CommissionEmployee {
         }
     }
 
+    // Regular earnings without the birthday incentive
     public double computeSalary() {
         return totalSale * getCommissionRate();
     }
 
+    // Adds the birthday incentive when the payroll month is the employee's birth month
+    public double computeSalary(int currentMonth) {
+        if (birthDate.getMonth() == currentMonth) {
+            return computeSalary() + BIRTHDAY_INCENTIVE;
+        }
+        return computeSalary();
+    }
+
     public void displayCommissionEmployee() {
-        System.out.printf("ID: %d | Name: %s | Birthdate: %s | Total Sales: PHP%,.2f%n",
-                empID, empName, birthDate, totalSale);
+        System.out.printf("ID: %d | Name: %s | DOB: %s | Hired: %s | Total Sales: ₱%,.2f%n",
+                empID, empName, birthDate, dateHired, totalSale);
     }
 
     @Override
     public String toString() {
         return String.format(
-                "CommissionEmployee [ID: %d, Name: %s, Birthdate: %s, Sales: PHP%,.2f, "
-                        + "Rate: %.0f%%, Total Salary: PHP%,.2f]",
-                empID, empName, birthDate, totalSale, getCommissionRate() * 100, computeSalary());
+                "CommissionEmployee [ID: %d, Name: %s, DOB: %s, Hired: %s, Sales: ₱%,.2f, Rate: %.0f%%, "
+                        + "Total Salary: ₱%,.2f]",
+                empID, empName, birthDate, dateHired, totalSale, getCommissionRate() * 100, computeSalary());
     }
 }

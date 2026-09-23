@@ -2,9 +2,12 @@ package version2;
 
 public class HourlyEmployee {
 
+    public static final double BIRTHDAY_INCENTIVE = 5000.00;
+
     private int empID;
     private Name empName;
     private MyDate birthDate;
+    private MyDate dateHired;
     private float totalHoursWorked;
     private double ratePerHour;
 
@@ -12,23 +15,26 @@ public class HourlyEmployee {
         this.empID = 0;
         this.empName = new Name();
         this.birthDate = new MyDate();
+        this.dateHired = new MyDate();
         this.totalHoursWorked = 0;
         this.ratePerHour = 0;
     }
 
-    public HourlyEmployee(int empID, Name empName, MyDate birthDate) {
+    public HourlyEmployee(int empID, Name empName, MyDate birthDate, MyDate dateHired) {
         this.empID = empID;
         setEmpName(empName);
         setBirthDate(birthDate);
+        setDateHired(dateHired);
         this.totalHoursWorked = 0;
         this.ratePerHour = 0;
     }
 
-    public HourlyEmployee(int empID, Name empName, MyDate birthDate,
+    public HourlyEmployee(int empID, Name empName, MyDate birthDate, MyDate dateHired,
                           float totalHoursWorked, double ratePerHour) {
         this.empID = empID;
         setEmpName(empName);
         setBirthDate(birthDate);
+        setDateHired(dateHired);
         setTotalHoursWorked(totalHoursWorked);
         setRatePerHour(ratePerHour);
     }
@@ -65,6 +71,18 @@ public class HourlyEmployee {
         }
     }
 
+    public MyDate getDateHired() {
+        return dateHired;
+    }
+
+    public void setDateHired(MyDate dateHired) {
+        if (dateHired == null) {
+            this.dateHired = new MyDate();
+        } else {
+            this.dateHired = dateHired;
+        }
+    }
+
     public float getTotalHoursWorked() {
         return totalHoursWorked;
     }
@@ -91,6 +109,7 @@ public class HourlyEmployee {
         }
     }
 
+    // Regular earnings without the birthday incentive
     public double computeSalary() {
         double regularPay;
         double overtimePay = 0;
@@ -104,16 +123,24 @@ public class HourlyEmployee {
         return regularPay + overtimePay;
     }
 
+    // Adds the birthday incentive when the payroll month is the employee's birth month
+    public double computeSalary(int currentMonth) {
+        if (birthDate.getMonth() == currentMonth) {
+            return computeSalary() + BIRTHDAY_INCENTIVE;
+        }
+        return computeSalary();
+    }
+
     public void displayHourlyEmployee() {
-        System.out.printf("ID: %d | Name: %s | Birthdate: %s | Hours: %.2f | Rate: PHP%,.2f/hr%n",
-                empID, empName, birthDate, totalHoursWorked, ratePerHour);
+        System.out.printf("ID: %d | Name: %s | DOB: %s | Hired: %s | Hours: %.2f | Rate: ₱%,.2f/hr%n",
+                empID, empName, birthDate, dateHired, totalHoursWorked, ratePerHour);
     }
 
     @Override
     public String toString() {
         return String.format(
-                "HourlyEmployee [ID: %d, Name: %s, Birthdate: %s, Hours: %.2f, Rate: PHP%,.2f, "
-                        + "Total Salary: PHP%,.2f]",
-                empID, empName, birthDate, totalHoursWorked, ratePerHour, computeSalary());
+                "HourlyEmployee [ID: %d, Name: %s, DOB: %s, Hired: %s, Hours: %.2f, Rate: ₱%,.2f, "
+                        + "Total Salary: ₱%,.2f]",
+                empID, empName, birthDate, dateHired, totalHoursWorked, ratePerHour, computeSalary());
     }
 }
