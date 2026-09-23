@@ -1,29 +1,46 @@
 package version1;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+
 public class BasePlusCommissionEmployee {
+
+    public static final double BIRTHDAY_INCENTIVE = 5000.00;
+    private static final DateTimeFormatter DATE_FORMAT =
+            DateTimeFormatter.ofPattern("dd MMM yyyy", Locale.ENGLISH);
 
     private int empID;
     private String empName;
+    private LocalDate birthDate;
+    private LocalDate dateHired;
     private double totalSale;
     private double baseSalary;
 
     public BasePlusCommissionEmployee() {
         this.empID = 0;
         this.empName = "N/A";
+        this.birthDate = null;
+        this.dateHired = null;
         this.totalSale = 0;
         this.baseSalary = 0;
     }
 
-    public BasePlusCommissionEmployee(int empID, String empName) {
+    public BasePlusCommissionEmployee(int empID, String empName, LocalDate birthDate, LocalDate dateHired) {
         this.empID = empID;
-        this.empName = empName;
+        setEmpName(empName);
+        setBirthDate(birthDate);
+        setDateHired(dateHired);
         this.totalSale = 0;
         this.baseSalary = 0;
     }
 
-    public BasePlusCommissionEmployee(int empID, String empName, double totalSale, double baseSalary) {
+    public BasePlusCommissionEmployee(int empID, String empName, LocalDate birthDate, LocalDate dateHired,
+                                      double totalSale, double baseSalary) {
         this.empID = empID;
-        this.empName = empName;
+        setEmpName(empName);
+        setBirthDate(birthDate);
+        setDateHired(dateHired);
         setTotalSale(totalSale);
         setBaseSalary(baseSalary);
     }
@@ -46,6 +63,22 @@ public class BasePlusCommissionEmployee {
         } else {
             this.empName = empName;
         }
+    }
+
+    public LocalDate getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(LocalDate birthDate) {
+        this.birthDate = birthDate;
+    }
+
+    public LocalDate getDateHired() {
+        return dateHired;
+    }
+
+    public void setDateHired(LocalDate dateHired) {
+        this.dateHired = dateHired;
     }
 
     public double getTotalSale() {
@@ -90,16 +123,32 @@ public class BasePlusCommissionEmployee {
         return baseSalary + (totalSale * getCommissionRate());
     }
 
+    // Adds the birthday incentive when the payroll month is the employee's birth month
+    public double computeSalary(int payrollMonth) {
+        if (birthDate != null && payrollMonth == birthDate.getMonthValue()) {
+            return computeSalary() + BIRTHDAY_INCENTIVE;
+        }
+        return computeSalary();
+    }
+
+    private String formatDate(LocalDate date) {
+        if (date == null) {
+            return "N/A";
+        }
+        return date.format(DATE_FORMAT);
+    }
+
     public void displayBasePlusCommissionEmployee() {
-        System.out.printf("ID: %d | Name: %s | Total Sales: PHP%,.2f | Base Salary: PHP%,.2f%n",
-                empID, empName, totalSale, baseSalary);
+        System.out.printf("ID: %d | Name: %s | DOB: %s | Hired: %s | Total Sales: ₱%,.2f | Base Salary: ₱%,.2f%n",
+                empID, empName, formatDate(birthDate), formatDate(dateHired), totalSale, baseSalary);
     }
 
     @Override
     public String toString() {
         return String.format(
-                "BasePlusCommissionEmployee [ID: %d, Name: %s, Base Salary: PHP%,.2f, Sales: PHP%,.2f, "
-                        + "Rate: %.0f%%, Total Salary: PHP%,.2f]",
-                empID, empName, baseSalary, totalSale, getCommissionRate() * 100, computeSalary());
+                "BasePlusCommissionEmployee [ID: %d, Name: %s, DOB: %s, Hired: %s, Base Salary: ₱%,.2f, "
+                        + "Sales: ₱%,.2f, Rate: %.0f%%, Total Salary: ₱%,.2f]",
+                empID, empName, formatDate(birthDate), formatDate(dateHired), baseSalary, totalSale,
+                getCommissionRate() * 100, computeSalary());
     }
 }

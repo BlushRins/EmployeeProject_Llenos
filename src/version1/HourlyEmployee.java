@@ -1,29 +1,46 @@
 package version1;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+
 public class HourlyEmployee {
+
+    public static final double BIRTHDAY_INCENTIVE = 5000.00;
+    private static final DateTimeFormatter DATE_FORMAT =
+            DateTimeFormatter.ofPattern("dd MMM yyyy", Locale.ENGLISH);
 
     private int empID;
     private String empName;
+    private LocalDate birthDate;
+    private LocalDate dateHired;
     private float totalHoursWorked;
     private double ratePerHour;
 
     public HourlyEmployee() {
         this.empID = 0;
         this.empName = "N/A";
+        this.birthDate = null;
+        this.dateHired = null;
         this.totalHoursWorked = 0;
         this.ratePerHour = 0;
     }
 
-    public HourlyEmployee(int empID, String empName) {
+    public HourlyEmployee(int empID, String empName, LocalDate birthDate, LocalDate dateHired) {
         this.empID = empID;
-        this.empName = empName;
+        setEmpName(empName);
+        setBirthDate(birthDate);
+        setDateHired(dateHired);
         this.totalHoursWorked = 0;
         this.ratePerHour = 0;
     }
 
-    public HourlyEmployee(int empID, String empName, float totalHoursWorked, double ratePerHour) {
+    public HourlyEmployee(int empID, String empName, LocalDate birthDate, LocalDate dateHired,
+                          float totalHoursWorked, double ratePerHour) {
         this.empID = empID;
-        this.empName = empName;
+        setEmpName(empName);
+        setBirthDate(birthDate);
+        setDateHired(dateHired);
         setTotalHoursWorked(totalHoursWorked);
         setRatePerHour(ratePerHour);
     }
@@ -46,6 +63,22 @@ public class HourlyEmployee {
         } else {
             this.empName = empName;
         }
+    }
+
+    public LocalDate getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(LocalDate birthDate) {
+        this.birthDate = birthDate;
+    }
+
+    public LocalDate getDateHired() {
+        return dateHired;
+    }
+
+    public void setDateHired(LocalDate dateHired) {
+        this.dateHired = dateHired;
     }
 
     public float getTotalHoursWorked() {
@@ -87,15 +120,31 @@ public class HourlyEmployee {
         return regularPay + overtimePay;
     }
 
+    // Adds the birthday incentive when the payroll month is the employee's birth month
+    public double computeSalary(int payrollMonth) {
+        if (birthDate != null && payrollMonth == birthDate.getMonthValue()) {
+            return computeSalary() + BIRTHDAY_INCENTIVE;
+        }
+        return computeSalary();
+    }
+
+    private String formatDate(LocalDate date) {
+        if (date == null) {
+            return "N/A";
+        }
+        return date.format(DATE_FORMAT);
+    }
+
     public void displayHourlyEmployee() {
-        System.out.printf("ID: %d | Name: %s | Hours: %.2f | Rate: PHP%,.2f/hr%n",
-                empID, empName, totalHoursWorked, ratePerHour);
+        System.out.printf("ID: %d | Name: %s | DOB: %s | Hired: %s | Hours: %.2f | Rate: ₱%,.2f/hr%n",
+                empID, empName, formatDate(birthDate), formatDate(dateHired), totalHoursWorked, ratePerHour);
     }
 
     @Override
     public String toString() {
         return String.format(
-                "HourlyEmployee [ID: %d, Name: %s, Hours: %.2f, Rate: PHP%,.2f, Total Salary: PHP%,.2f]",
-                empID, empName, totalHoursWorked, ratePerHour, computeSalary());
+                "HourlyEmployee [ID: %d, Name: %s, DOB: %s, Hired: %s, Hours: %.2f, Rate: ₱%,.2f, "
+                        + "Total Salary: ₱%,.2f]",
+                empID, empName, formatDate(birthDate), formatDate(dateHired), totalHoursWorked, ratePerHour, computeSalary());
     }
 }
