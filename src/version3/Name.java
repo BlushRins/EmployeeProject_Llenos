@@ -1,70 +1,85 @@
 package version3;
 
-public class Name {
+import java.util.Locale;
+import java.util.Objects;
 
-    private String firstname;
-    private String middleN;
-    private String lastname;
+public class Name implements Cloneable {
 
-    public Name() {
-        this("", "", "");
+    private String firstName;
+    private String middleName;
+    private String lastName;
+    private String suffix;
+
+    public Name() { this("N/A", "", "N/A", ""); }
+    public Name(String firstName, String lastName) { this(firstName, "", lastName, ""); }
+    public Name(String firstName, String middleName, String lastName) { this(firstName, middleName, lastName, ""); }
+
+    public Name(String firstName, String middleName, String lastName, String suffix) {
+        setFirstName(firstName);
+        setMiddleName(middleName);
+        setLastName(lastName);
+        setSuffix(suffix);
     }
 
-    public Name(String firstname, String middleN, String lastname) {
-        setFirstname(firstname);
-        setMiddleN(middleN);
-        setLastname(lastname);
+    public String getFirstName() { return firstName; }
+    public void setFirstName(String value) { firstName = requiredText(value); }
+    public String getMiddleName() { return middleName; }
+    public void setMiddleName(String value) { middleName = optionalText(value); }
+    public String getLastName() { return lastName; }
+    public void setLastName(String value) { lastName = requiredText(value); }
+    public String getSuffix() { return suffix; }
+    public void setSuffix(String value) { suffix = optionalText(value); }
+
+    // Aliases keep the shorter names used by the original version 3 code working.
+    public String getFirstname() { return getFirstName(); }
+    public void setFirstname(String value) { setFirstName(value); }
+    public String getMiddleN() { return getMiddleName(); }
+    public void setMiddleN(String value) { setMiddleName(value); }
+    public String getLastname() { return getLastName(); }
+    public void setLastname(String value) { setLastName(value); }
+
+    private String requiredText(String value) {
+        return value == null || value.trim().isEmpty() ? "N/A" : value.trim();
     }
 
-    public String getFirstname() {
-        return firstname;
+    private String optionalText(String value) { return value == null ? "" : value.trim(); }
+
+    private String middleInitial() {
+        return middleName.isEmpty() ? "" : middleName.substring(0, 1) + ".";
     }
 
-    public void setFirstname(String firstname) {
-        this.firstname = clean(firstname);
-    }
-
-    public String getMiddleN() {
-        return middleN;
-    }
-
-    public void setMiddleN(String middleN) {
-        this.middleN = clean(middleN);
-    }
-
-    public String getLastname() {
-        return lastname;
-    }
-
-    public void setLastname(String lastname) {
-        this.lastname = clean(lastname);
-    }
-
-    private String clean(String value) {
-        if (value == null) {
-            return "";
-        }
-        return value.trim();
-    }
-
-    public void display() {
-        System.out.println(this);
-    }
+    public void displayName() { System.out.println(this); }
+    public void display() { displayName(); }
 
     @Override
     public String toString() {
-        if (firstname.isEmpty() && middleN.isEmpty() && lastname.isEmpty()) {
-            return "N/A";
-        }
+        if ("N/A".equals(firstName) && "N/A".equals(lastName)) return "N/A";
+        String result = lastName + ", " + firstName;
+        if (!middleInitial().isEmpty()) result += " " + middleInitial();
+        if (!suffix.isEmpty()) result += " " + suffix;
+        return result;
+    }
 
-        String full = lastname;
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Name)) return false;
+        Name other = (Name) obj;
+        return firstName.equalsIgnoreCase(other.firstName)
+                && middleName.equalsIgnoreCase(other.middleName)
+                && lastName.equalsIgnoreCase(other.lastName)
+                && suffix.equalsIgnoreCase(other.suffix);
+    }
 
-        if (!firstname.isEmpty()) {
-            full = full.isEmpty() ? firstname : full + ", " + firstname;
-        }
-        if (!middleN.isEmpty()) {
-            full = full.isEmpty() ? middleN : full + " " + middleN;
-        }
-        return full;
+    @Override
+    public int hashCode() {
+        return Objects.hash(firstName.toLowerCase(Locale.ROOT), middleName.toLowerCase(Locale.ROOT),
+                lastName.toLowerCase(Locale.ROOT), suffix.toLowerCase(Locale.ROOT));
+    }
+
+    @Override
+    public Name clone() {
+        try { return (Name) super.clone(); }
+        catch (CloneNotSupportedException exception) { throw new AssertionError(exception); }
     }
 }

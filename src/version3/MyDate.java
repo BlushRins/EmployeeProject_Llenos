@@ -1,81 +1,100 @@
 package version3;
 
-public class MyDate {
+import java.util.Objects;
+
+public class MyDate implements Cloneable {
+
+    private static final String[] MONTH_NAMES = {
+            "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+    };
 
     private int day;
-    private int mon;
-    private int y;
+    private int month;
+    private int year;
 
-    public MyDate() {
-        this(1, 1, 1900);
-    }
+    public MyDate() { this(1, 1, 2000); }
 
-    public MyDate(int day, int mon, int y) {
-        setY(y);
-        setMon(mon);
+    public MyDate(int day, int month, int year) {
+        this.day = 1;
+        this.month = 1;
+        this.year = 2000;
+        setYear(year);
+        setMonth(month);
         setDay(day);
     }
 
-    public int getDay() {
-        return day;
+    public int getDay() { return day; }
+    public int getMonth() { return month; }
+    public int getYear() { return year; }
+
+    public void setDay(int value) {
+        if (value < 1 || value > daysInMonth(month, year)) {
+            System.out.println("Invalid day. Value must be from 1 to " + daysInMonth(month, year) + ".");
+            day = 1;
+        } else day = value;
     }
 
-    public void setDay(int day) {
-        if (day < 1 || day > daysInMonth(mon, y)) {
-            System.out.println("Invalid day. Value must be from 1 to " + daysInMonth(mon, y) + ".");
-            this.day = 1;
-        } else {
-            this.day = day;
-        }
-    }
-
-    public int getMon() {
-        return mon;
-    }
-
-    public void setMon(int mon) {
-        if (mon < 1 || mon > 12) {
+    public void setMonth(int value) {
+        if (value < 1 || value > 12) {
             System.out.println("Invalid month. Value must be from 1 to 12.");
-            this.mon = 1;
-        } else {
-            this.mon = mon;
+            month = 1;
+            return;
         }
+        month = value;
+        if (day > daysInMonth(month, year)) day = daysInMonth(month, year);
     }
 
-    public int getY() {
-        return y;
-    }
-
-    public void setY(int y) {
-        if (y < 1) {
+    public void setYear(int value) {
+        if (value < 1) {
             System.out.println("Invalid year. Value must not be zero or negative.");
-            this.y = 1900;
-        } else {
-            this.y = y;
+            year = 2000;
+        } else year = value;
+        if (day > daysInMonth(month, year)) day = daysInMonth(month, year);
+    }
+
+    // Aliases keep the shorter names used by the original version 3 code working.
+    public int getMon() { return getMonth(); }
+    public void setMon(int value) { setMonth(value); }
+    public int getY() { return getYear(); }
+    public void setY(int value) { setYear(value); }
+
+    private int daysInMonth(int month, int year) {
+        switch (month) {
+            case 4: case 6: case 9: case 11: return 30;
+            case 2: return isLeapYear(year) ? 29 : 28;
+            default: return 31;
         }
     }
 
-    private int daysInMonth(int mon, int y) {
-        switch (mon) {
-            case 4: case 6: case 9: case 11:
-                return 30;
-            case 2:
-                return isLeapYear(y) ? 29 : 28;
-            default:
-                return 31;
-        }
+    private boolean isLeapYear(int year) {
+        return (year % 4 == 0 && year % 100 != 0) || year % 400 == 0;
     }
 
-    private boolean isLeapYear(int y) {
-        return (y % 4 == 0 && y % 100 != 0) || (y % 400 == 0);
+    public static String getMonthName(int month) {
+        return month >= 1 && month <= 12 ? MONTH_NAMES[month - 1] : "N/A";
     }
 
-    public void display() {
-        System.out.println(this);
+    public void displayDate() { System.out.println(this); }
+    public void display() { displayDate(); }
+
+    @Override
+    public String toString() { return String.format("%02d %s %04d", day, getMonthName(month), year); }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof MyDate)) return false;
+        MyDate other = (MyDate) obj;
+        return day == other.day && month == other.month && year == other.year;
     }
 
     @Override
-    public String toString() {
-        return String.format("%02d/%02d/%04d", mon, day, y);
+    public int hashCode() { return Objects.hash(day, month, year); }
+
+    @Override
+    public MyDate clone() {
+        try { return (MyDate) super.clone(); }
+        catch (CloneNotSupportedException exception) { throw new AssertionError(exception); }
     }
 }
