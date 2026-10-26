@@ -7,14 +7,18 @@ public class HourlyEmployee extends Employee {
     private float totalHoursWorked;
     private double ratePerHour;
 
-    public HourlyEmployee() { super(); }
-    public HourlyEmployee(int empID, Name empName, MyDate birthDate) {
-        this(empID, empName, birthDate, new MyDate(), 0.0f, 0.0);
+    public HourlyEmployee() {
+        super();
+        this.totalHoursWorked = 0;
+        this.ratePerHour = 0;
     }
-    public HourlyEmployee(int empID, Name empName, MyDate birthDate,
-                          float totalHoursWorked, double ratePerHour) {
-        this(empID, empName, birthDate, new MyDate(), totalHoursWorked, ratePerHour);
+
+    public HourlyEmployee(int empID, Name empName, MyDate birthDate, MyDate dateHired) {
+        super(empID, empName, birthDate, dateHired);
+        this.totalHoursWorked = 0;
+        this.ratePerHour = 0;
     }
+
     public HourlyEmployee(int empID, Name empName, MyDate birthDate, MyDate dateHired,
                           float totalHoursWorked, double ratePerHour) {
         super(empID, empName, birthDate, dateHired);
@@ -22,57 +26,77 @@ public class HourlyEmployee extends Employee {
         setRatePerHour(ratePerHour);
     }
 
-    public float getTotalHoursWorked() { return totalHoursWorked; }
-    public double getRatePerHour() { return ratePerHour; }
+    public float getTotalHoursWorked() {
+        return totalHoursWorked;
+    }
 
-    public void setTotalHoursWorked(float value) {
-        if (value < 0) {
+    public void setTotalHoursWorked(float totalHoursWorked) {
+        if (totalHoursWorked < 0) {
             System.out.println("Invalid hours worked. Value must not be negative.");
-            totalHoursWorked = 0.0f;
-        } else totalHoursWorked = value;
+            this.totalHoursWorked = 0;
+        } else {
+            this.totalHoursWorked = totalHoursWorked;
+        }
     }
 
-    public void setRatePerHour(double value) {
-        if (value < 0) {
+    public double getRatePerHour() {
+        return ratePerHour;
+    }
+
+    public void setRatePerHour(double ratePerHour) {
+        if (ratePerHour < 0) {
             System.out.println("Invalid rate per hour. Value must not be negative.");
-            ratePerHour = 0.0;
-        } else ratePerHour = value;
-    }
-
-    @Override
-    public double computeSalary() {
-        if (totalHoursWorked <= 40) return totalHoursWorked * ratePerHour;
-        return 40 * ratePerHour + (totalHoursWorked - 40) * ratePerHour * 1.5;
+            this.ratePerHour = 0;
+        } else {
+            this.ratePerHour = ratePerHour;
+        }
     }
 
     @Override
     public double computeSalary(int currentMonth) {
-        return computeSalary() + birthdayBonus(currentMonth);
+        double regularPay;
+        double overtimePay = 0;
+
+        if (totalHoursWorked <= 40) {
+            regularPay = totalHoursWorked * ratePerHour;
+        } else {
+            regularPay = 40 * ratePerHour;
+            overtimePay = (totalHoursWorked - 40) * (ratePerHour * 1.5);
+        }
+        return regularPay + overtimePay + super.computeSalary(currentMonth);
     }
 
     public void displayHourlyEmployee() {
-        System.out.printf("ID: %d | Name: %s | DOB: %s | Hired: %s | Hours: %.2f | Rate: ₱%,.2f/hr%n",
-                getEmpID(), getEmpName(), getBirthDate(), getDateHired(), totalHoursWorked, ratePerHour);
+        displayEmployee();
+        System.out.printf("Hours: %.2f | Rate: ₱%,.2f/hr%n", totalHoursWorked, ratePerHour);
     }
 
     @Override
     public String toString() {
-        return String.format("HourlyEmployee [ID: %d, Name: %s, DOB: %s, Hired: %s, Hours: %.2f, "
-                        + "Rate: ₱%,.2f, Total Salary: ₱%,.2f]",
+        return String.format(
+                "HourlyEmployee [ID: %d, Name: %s, DOB: %s, Hired: %s, Hours: %.2f, Rate: ₱%,.2f, "
+                        + "Total Salary: ₱%,.2f]",
                 getEmpID(), getEmpName(), getBirthDate(), getDateHired(),
                 totalHoursWorked, ratePerHour, computeSalary());
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof HourlyEmployee) || !super.equals(obj)) return false;
+        if (!super.equals(obj)) {
+            return false;
+        }
         HourlyEmployee other = (HourlyEmployee) obj;
         return Float.compare(totalHoursWorked, other.totalHoursWorked) == 0
                 && Double.compare(ratePerHour, other.ratePerHour) == 0;
     }
 
     @Override
-    public int hashCode() { return Objects.hash(super.hashCode(), totalHoursWorked, ratePerHour); }
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), totalHoursWorked, ratePerHour);
+    }
+
     @Override
-    public HourlyEmployee clone() { return (HourlyEmployee) super.clone(); }
+    public HourlyEmployee clone() {
+        return (HourlyEmployee) super.clone();
+    }
 }

@@ -2,79 +2,83 @@ package version3;
 
 public class Main {
 
+    private static final String LINE =
+            "======================================================================";
+
     public static void main(String[] args) {
-        System.out.println("--- Name & Date Output Verification ---");
-        Name sampleName = new Name("Carlos", "Miguel", "Reyes");
-        MyDate sampleDate = new MyDate(14, 9, 2026);
-        System.out.print("Name: ");
-        sampleName.displayName();
-        System.out.print("Date: ");
-        sampleDate.displayDate();
 
         HourlyEmployee hourly = new HourlyEmployee(101,
-                new Name("Alice", "Grace", "Smith"),
-                new MyDate(18, 9, 2000), new MyDate(1, 6, 2022), 45.0f, 200.00);
+                new Name("Carlos", "Miguel", "Reyes"),
+                new MyDate(14, 10, 2001), new MyDate(15, 7, 2022), 46.0f, 210.00);
+
         PieceWorkerEmployee piece = new PieceWorkerEmployee(201,
-                new Name("Bob", "Calvin", "Jones", "Jr."),
-                new MyDate(5, 4, 1998), new MyDate(15, 1, 2023), 250, 15.00);
-        CommissionEmployee commission = new CommissionEmployee(301,
+                new Name("Bryan", "Castro", "Jones", "Jr."),
+                new MyDate(25, 1, 1996), new MyDate(11, 11, 2020), 260, 16.00);
+
+        CommissionEmployee comm = new CommissionEmployee(301,
                 new Name("Elena", "Rose", "Marquez"),
-                new MyDate(21, 9, 1990), new MyDate(10, 1, 2020), 85000.00);
-        BasePlusCommissionEmployee basePlus = new BasePlusCommissionEmployee(401,
+                new MyDate(21, 3, 1997), new MyDate(10, 1, 2020), 85000.00);
+
+        BasePlusCommissionEmployee base = new BasePlusCommissionEmployee(401,
                 new Name("Henry", "Jose", "Tan"),
-                new MyDate(12, 12, 1985), new MyDate(1, 8, 2019), 120000.00, 18000.00);
+                new MyDate(12, 12, 1995), new MyDate(1, 8, 2019), 120000.00, 18500.00);
 
-        Employee[] employees = {hourly, piece, commission, basePlus};
-        int targetMonth = 9;
+        // 1. Polymorphic Collection & Payroll Processing
+        Employee[] employees = {hourly, piece, comm, base};
+        int targetMonth = 10;
 
-        System.out.println();
-        System.out.println("======================================================================");
+        System.out.println(LINE);
         System.out.println("POLYMORPHIC PAYROLL REPORT (Target Month: " + MyDate.getMonthName(targetMonth) + ")");
-        System.out.println("======================================================================");
-        for (int index = 0; index < employees.length; index++) {
-            Employee employee = employees[index];
-            double regularPay = employee.computeSalary();
-            double totalPayout = employee.computeSalary(targetMonth);
-            double birthdayBonus = totalPayout - regularPay;
-            System.out.printf("%n%d. %s%n", index + 1, employee);
-            System.out.printf("   Base Pay: ₱%,.2f | Birthday Bonus: ₱%,.2f (%s)%n",
-                    regularPay, birthdayBonus, birthdayBonus > 0 ? "Eligible" : "Ineligible");
-            System.out.printf("   Total Payout: ₱%,.2f%n", totalPayout);
+        System.out.println(LINE);
+
+        for (int i = 0; i < employees.length; i++) {
+            Employee emp = employees[i];
+            double basePay = emp.computeSalary();
+            double totalPayout = emp.computeSalary(targetMonth);
+            double bonus = totalPayout - basePay;
+
+            System.out.printf("%d. %s [ID: %d, Name: %s, DOB: %s, Hired: %s]%n",
+                    i + 1, emp.getClass().getSimpleName(),
+                    emp.getEmpID(), emp.getEmpName(), emp.getBirthDate(), emp.getDateHired());
+            System.out.printf(" Base Pay: ₱%,.2f | Birthday Bonus: ₱%,.2f (%s)%n",
+                    basePay, bonus, bonus > 0 ? "Eligible" : "Ineligible");
+            System.out.printf(" Total Payout: ₱%,.2f%n", totalPayout);
+            System.out.println();
         }
 
-        System.out.println();
-        System.out.println("======================================================================");
+        // 3. Equivalence & Hash Code Verification
+        HourlyEmployee emp1 = hourly;
+        HourlyEmployee emp1Identical = new HourlyEmployee(101,
+                new Name("Carlos", "Miguel", "Reyes"),
+                new MyDate(14, 10, 2001), new MyDate(15, 7, 2022), 46.0f, 210.00);
+        HourlyEmployee emp2 = new HourlyEmployee(101,
+                new Name("Carlos", "Miguel", "Reyes"),
+                new MyDate(14, 10, 2001), new MyDate(15, 7, 2022), 40.0f, 210.00);
+
+        System.out.println(LINE);
         System.out.println("OBJECT CONTRACT TESTS (equals & hashCode)");
-        System.out.println("======================================================================");
-        HourlyEmployee identical = new HourlyEmployee(101,
-                new Name("Alice", "Grace", "Smith"),
-                new MyDate(18, 9, 2000), new MyDate(1, 6, 2022), 45.0f, 200.00);
-        System.out.println("emp1 equals emp1Identical: " + hourly.equals(identical));
-        System.out.println("emp1 hashCode: " + hourly.hashCode()
-                + " | emp1Identical hashCode: " + identical.hashCode()
-                + " (Match: " + (hourly.hashCode() == identical.hashCode()) + ")");
-        identical.setRatePerHour(210.00);
-        System.out.println("emp1 equals modified instance: " + hourly.equals(identical));
-
+        System.out.println(LINE);
+        System.out.println("emp1 equals emp1Identical: " + emp1.equals(emp1Identical));
+        System.out.println("emp1 hashCode: " + emp1.hashCode()
+                + " | emp1Identical hashCode: " + emp1Identical.hashCode()
+                + " (Match: " + (emp1.hashCode() == emp1Identical.hashCode()) + ")");
+        System.out.println("emp1 equals emp2: " + emp1.equals(emp2));
         System.out.println();
+
+        // 2. Deep Copy Verification
+        HourlyEmployee empOriginal = hourly;
+        HourlyEmployee empClone = empOriginal.clone();
+
+        System.out.println(LINE);
         System.out.println("DEEP CLONE VERIFICATION");
-        HourlyEmployee clone = hourly.clone();
-        System.out.println("Original Name before modification: " + hourly.getEmpName());
-        clone.getEmpName().setFirstName("Taylor");
-        clone.getBirthDate().setMonth(10);
-        System.out.println("Clone Name changed to:              " + clone.getEmpName());
-        System.out.println("Original Name after modification:   " + hourly.getEmpName());
-        System.out.println("Original Birth Month: " + MyDate.getMonthName(hourly.getBirthDate().getMonth()));
-        System.out.println("Clone Birth Month:    " + MyDate.getMonthName(clone.getBirthDate().getMonth()));
-        System.out.println("Deep copy successful: "
-                + (!hourly.getEmpName().equals(clone.getEmpName())
-                && !hourly.getBirthDate().equals(clone.getBirthDate())));
+        System.out.println(LINE);
+        System.out.println("Original Name before modification: " + empOriginal.getEmpName());
 
-        System.out.println();
-        System.out.println("--- Individual Display Methods ---");
-        hourly.displayHourlyEmployee();
-        piece.displayPieceWorkerEmployee();
-        commission.displayCommissionEmployee();
-        basePlus.displayBasePlusCommissionEmployee();
+        empClone.getEmpName().setLastName("Garcia");
+        System.out.println("Clone Name changed to:         " + empClone.getEmpName());
+
+        boolean unaffected = empOriginal.getEmpName().getLastName().equals("Reyes");
+        System.out.println("Original Name after modification: " + empOriginal.getEmpName()
+                + (unaffected ? " (Deep copy successful!)" : " (Shallow copy - original was changed!)"));
     }
 }

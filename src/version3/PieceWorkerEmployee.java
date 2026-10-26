@@ -7,14 +7,18 @@ public class PieceWorkerEmployee extends Employee {
     private int totalPiecesFinished;
     private double ratePerPiece;
 
-    public PieceWorkerEmployee() { super(); }
-    public PieceWorkerEmployee(int empID, Name empName, MyDate birthDate) {
-        this(empID, empName, birthDate, new MyDate(), 0, 0.0);
+    public PieceWorkerEmployee() {
+        super();
+        this.totalPiecesFinished = 0;
+        this.ratePerPiece = 0;
     }
-    public PieceWorkerEmployee(int empID, Name empName, MyDate birthDate,
-                               int totalPiecesFinished, double ratePerPiece) {
-        this(empID, empName, birthDate, new MyDate(), totalPiecesFinished, ratePerPiece);
+
+    public PieceWorkerEmployee(int empID, Name empName, MyDate birthDate, MyDate dateHired) {
+        super(empID, empName, birthDate, dateHired);
+        this.totalPiecesFinished = 0;
+        this.ratePerPiece = 0;
     }
+
     public PieceWorkerEmployee(int empID, Name empName, MyDate birthDate, MyDate dateHired,
                                int totalPiecesFinished, double ratePerPiece) {
         super(empID, empName, birthDate, dateHired);
@@ -22,58 +26,71 @@ public class PieceWorkerEmployee extends Employee {
         setRatePerPiece(ratePerPiece);
     }
 
-    public int getTotalPiecesFinished() { return totalPiecesFinished; }
-    public double getRatePerPiece() { return ratePerPiece; }
+    public int getTotalPiecesFinished() {
+        return totalPiecesFinished;
+    }
 
-    public void setTotalPiecesFinished(int value) {
-        if (value < 0) {
+    public void setTotalPiecesFinished(int totalPiecesFinished) {
+        if (totalPiecesFinished < 0) {
             System.out.println("Invalid piece count. Value must not be negative.");
-            totalPiecesFinished = 0;
-        } else totalPiecesFinished = value;
+            this.totalPiecesFinished = 0;
+        } else {
+            this.totalPiecesFinished = totalPiecesFinished;
+        }
     }
 
-    public void setRatePerPiece(double value) {
-        if (value < 0) {
+    public double getRatePerPiece() {
+        return ratePerPiece;
+    }
+
+    public void setRatePerPiece(double ratePerPiece) {
+        if (ratePerPiece < 0) {
             System.out.println("Invalid rate per piece. Value must not be negative.");
-            ratePerPiece = 0.0;
-        } else ratePerPiece = value;
-    }
-
-    @Override
-    public double computeSalary() {
-        double productionPay = totalPiecesFinished * ratePerPiece;
-        double hundredPieceBonus = (totalPiecesFinished / 100) * 10 * ratePerPiece;
-        return productionPay + hundredPieceBonus;
+            this.ratePerPiece = 0;
+        } else {
+            this.ratePerPiece = ratePerPiece;
+        }
     }
 
     @Override
     public double computeSalary(int currentMonth) {
-        return computeSalary() + birthdayBonus(currentMonth);
+        double basePay = totalPiecesFinished * ratePerPiece;
+        int bonusBlocks = totalPiecesFinished / 100;
+        double bonusPay = bonusBlocks * (10 * ratePerPiece);
+        return basePay + bonusPay + super.computeSalary(currentMonth);
     }
 
     public void displayPieceWorkerEmployee() {
-        System.out.printf("ID: %d | Name: %s | DOB: %s | Hired: %s | Pieces Finished: %d | Rate/Piece: ₱%,.2f%n",
-                getEmpID(), getEmpName(), getBirthDate(), getDateHired(), totalPiecesFinished, ratePerPiece);
+        displayEmployee();
+        System.out.printf("Pieces Finished: %d | Rate/Piece: ₱%,.2f%n", totalPiecesFinished, ratePerPiece);
     }
 
     @Override
     public String toString() {
-        return String.format("PieceWorkerEmployee [ID: %d, Name: %s, DOB: %s, Hired: %s, Pieces: %d, "
-                        + "Rate: ₱%,.2f, Total Salary: ₱%,.2f]",
+        return String.format(
+                "PieceWorkerEmployee [ID: %d, Name: %s, DOB: %s, Hired: %s, Pieces: %d, Rate: ₱%,.2f, "
+                        + "Total Salary: ₱%,.2f]",
                 getEmpID(), getEmpName(), getBirthDate(), getDateHired(),
                 totalPiecesFinished, ratePerPiece, computeSalary());
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof PieceWorkerEmployee) || !super.equals(obj)) return false;
+        if (!super.equals(obj)) {
+            return false;
+        }
         PieceWorkerEmployee other = (PieceWorkerEmployee) obj;
         return totalPiecesFinished == other.totalPiecesFinished
                 && Double.compare(ratePerPiece, other.ratePerPiece) == 0;
     }
 
     @Override
-    public int hashCode() { return Objects.hash(super.hashCode(), totalPiecesFinished, ratePerPiece); }
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), totalPiecesFinished, ratePerPiece);
+    }
+
     @Override
-    public PieceWorkerEmployee clone() { return (PieceWorkerEmployee) super.clone(); }
+    public PieceWorkerEmployee clone() {
+        return (PieceWorkerEmployee) super.clone();
+    }
 }
