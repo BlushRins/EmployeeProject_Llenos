@@ -54,6 +54,11 @@ public class CommissionEmployee extends Employee {
 
     public void displayCommissionEmployee() {
         displayEmployee();
+    }
+
+    @Override
+    public void displayEmployee() {
+        displayIdentity();
         System.out.printf("Total Sales: ₱%,.2f%n", totalSale);
     }
 

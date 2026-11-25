@@ -62,6 +62,11 @@ public class PieceWorkerEmployee extends Employee {
 
     public void displayPieceWorkerEmployee() {
         displayEmployee();
+    }
+
+    @Override
+    public void displayEmployee() {
+        displayIdentity();
         System.out.printf("Pieces Finished: %d | Rate/Piece: ₱%,.2f%n", totalPiecesFinished, ratePerPiece);
     }
 

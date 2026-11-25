@@ -2,7 +2,7 @@ package version3;
 
 import java.util.Objects;
 
-public class Employee implements Cloneable {
+public abstract class Employee implements Cloneable {
 
     public static final double BIRTHDAY_INCENTIVE = 5000.00;
 
@@ -34,42 +34,42 @@ public class Employee implements Cloneable {
     }
 
     public Name getEmpName() {
-        return empName;
+        return empName.clone();
     }
 
     public void setEmpName(Name empName) {
         if (empName == null) {
             this.empName = new Name();
         } else {
-            this.empName = empName;
+            this.empName = empName.clone();
         }
     }
 
     public MyDate getBirthDate() {
-        return birthDate;
+        return birthDate.clone();
     }
 
     public void setBirthDate(MyDate birthDate) {
         if (birthDate == null) {
             this.birthDate = new MyDate();
         } else {
-            this.birthDate = birthDate;
+            this.birthDate = birthDate.clone();
         }
     }
 
     public MyDate getDateHired() {
-        return dateHired;
+        return dateHired.clone();
     }
 
     public void setDateHired(MyDate dateHired) {
         if (dateHired == null) {
             this.dateHired = new MyDate();
         } else {
-            this.dateHired = dateHired;
+            this.dateHired = dateHired.clone();
         }
     }
 
-    // A plain employee has no base pay, so this only returns the birthday incentive.
+    // Common birthday incentive.
     // Subclasses add their own pay on top of super.computeSalary(currentMonth).
     public double computeSalary(int currentMonth) {
         if (birthDate.getMonth() == currentMonth) {
@@ -83,7 +83,9 @@ public class Employee implements Cloneable {
         return computeSalary(-1);
     }
 
-    public void displayEmployee() {
+    public abstract void displayEmployee();
+
+    protected void displayIdentity() {
         System.out.printf("ID: %d | Name: %s | DOB: %s | Hired: %s%n",
                 empID, empName, birthDate, dateHired);
     }

@@ -11,7 +11,7 @@ public class Name implements Cloneable {
 
     public Name() {
         this.firstName = "N/A";
-        this.middleName = "N/A";
+        this.middleName = "";
         this.lastName = "N/A";
         this.suffix = "";
     }
@@ -53,6 +53,7 @@ public class Name implements Cloneable {
             this.middleName = "";
         } else {
             this.middleName = middleName.trim();
+            if ("N/A".equalsIgnoreCase(this.middleName)) this.middleName = "";
         }
     }
 
@@ -81,20 +82,14 @@ public class Name implements Cloneable {
     }
 
     private String getMiddleInitial() {
-        if (middleName.isEmpty() || middleName.equals("N/A")) {
+        if (middleName.isEmpty()) {
             return "";
         }
         return middleName.charAt(0) + ".";
     }
 
-    // Prints "lastName, firstName MI"
     public void displayName() {
-        String initial = getMiddleInitial();
-        if (initial.isEmpty()) {
-            System.out.println(lastName + ", " + firstName);
-        } else {
-            System.out.println(lastName + ", " + firstName + " " + initial);
-        }
+        System.out.println(this);
     }
 
     // Returns "lastName, firstName MI [suffix]", e.g. "Smith, Alice M." or "Jones, Bob C. Jr."

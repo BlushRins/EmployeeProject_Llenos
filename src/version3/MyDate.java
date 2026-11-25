@@ -9,7 +9,7 @@ public class MyDate implements Cloneable {
             "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
     };
 
-    private int day;
+    private int day = 1;
     private int month;
     private int year;
 
@@ -47,6 +47,7 @@ public class MyDate implements Cloneable {
         } else {
             this.month = month;
         }
+        day = Math.min(day, daysInMonth(this.month, this.year));
     }
 
     public int getYear() {
@@ -60,6 +61,7 @@ public class MyDate implements Cloneable {
         } else {
             this.year = year;
         }
+        day = Math.min(day, daysInMonth(this.month, this.year));
     }
 
     private int daysInMonth(int month, int year) {

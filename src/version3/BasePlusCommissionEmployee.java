@@ -43,6 +43,11 @@ public class BasePlusCommissionEmployee extends CommissionEmployee {
 
     public void displayBasePlusCommissionEmployee() {
         displayEmployee();
+    }
+
+    @Override
+    public void displayEmployee() {
+        displayIdentity();
         System.out.printf("Total Sales: ₱%,.2f | Base Salary: ₱%,.2f%n", getTotalSale(), baseSalary);
     }
 

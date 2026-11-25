@@ -68,6 +68,11 @@ public class HourlyEmployee extends Employee {
 
     public void displayHourlyEmployee() {
         displayEmployee();
+    }
+
+    @Override
+    public void displayEmployee() {
+        displayIdentity();
         System.out.printf("Hours: %.2f | Rate: ₱%,.2f/hr%n", totalHoursWorked, ratePerHour);
     }
 
